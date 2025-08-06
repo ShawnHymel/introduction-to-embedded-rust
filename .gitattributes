@@ -1,0 +1,16 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Force Unix LF line endings for scripts
+*.py text eol=lf
+*.rs text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile text eol=lf
+
+# Binary files
+*.zip binary
+*.tar.gz binary
+*.img binary
+*.bin binary

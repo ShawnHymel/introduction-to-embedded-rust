@@ -1,0 +1,20 @@
+{
+	"name": "Development Environment for Introduction to Embedded Rust",
+	"image": "env-embedded-rust:latest",
+	"workspaceMount": "source=${localWorkspaceFolder}/workspace,target=/home/student/workspace,type=bind",
+	"workspaceFolder": "/home/student/workspace",
+	"features": {},
+	"forwardPorts": [3000],
+	"postCreateCommand": "/usr/local/bin/entrypoint.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"rust-lang.rust-analyzer"
+			]
+		}
+	},
+	"runArgs": [
+        "--rm",
+        "-it"
+    ]
+}
