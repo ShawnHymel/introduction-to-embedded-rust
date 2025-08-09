@@ -3,6 +3,7 @@
 # Settings
 ARG RUST_VERSION=1.85.0-bookworm
 ARG RUST_BOOK_VERSION=async-2024
+ARG RUSTLINGS_VERSION=6.4.0
 ARG USER=student
 
 #-------------------------------------------------------------------------------
@@ -13,6 +14,7 @@ FROM rust:${RUST_VERSION}
 
 # Redeclare arguments after FROM
 ARG RUST_BOOK_VERSION
+ARG RUSTLINGS_VERSION
 ARG USER
 
 # Set environment variables
@@ -65,11 +67,11 @@ RUN cargo install \
     cargo-binutils \
     flip-link \
     elf2uf2-rs \
-    rustlings \
+    rustlings@${RUSTLINGS_VERSION} \
     mdbook
 
-# Initialize rustlings in the user's home directory
-RUN rustlings init
+# Install clippy for linting
+RUN rustup component add clippy
 
 #-------------------------------------------------------------------------------
 # Install the Rust Book

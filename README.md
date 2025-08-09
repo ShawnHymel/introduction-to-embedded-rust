@@ -16,6 +16,23 @@ Linux, macOS, Windows (PowerShell):
 docker run --rm -it -p 3000:3000 -v "${PWD}/workspace:/workspace" -w /workspace env-embedded-rust
 ```
 
+## Initialize rustlings
+
+If you would like to practice rust with the official [rustlings](https://github.com/rust-lang/rustlings) exercises, you should navigate to the *workspace/* directory (in the container) and initialize *rustlings*:
+
+```sh
+cd /home/student/workspace
+rustlings init
+```
+
+To start *rustlings* or pick up where you left off:
+
+```sh
+cd /home/student/workspace/rustlings
+rustlings --manual-run
+```
+
+> **Note**: by default, *rustlings* uses *rust-analyzer* to watch for file changes to check if your code works or not. This sometimes struggles in a container, so I recommend using `--manual-run` to disable this feature. It just means you need to press `r` in the *rustlings* prompt when you want to check your code.
 
 ## License
 

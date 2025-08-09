@@ -10,7 +10,16 @@
 		"vscode": {
 			"extensions": [
 				"rust-lang.rust-analyzer"
-			]
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash",
+						"icon": "terminal-bash"
+					}
+				}
+			}
 		}
 	},
 	"runArgs": [
