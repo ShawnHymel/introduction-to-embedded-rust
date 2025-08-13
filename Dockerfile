@@ -70,8 +70,8 @@ RUN cargo install \
     rustlings@${RUSTLINGS_VERSION} \
     mdbook
 
-# Install clippy for linting
-RUN rustup component add clippy rustfmt
+# Install linting, formatting, and inspection tools
+RUN rustup component add clippy rustfmt llvm-tools-preview
 
 #-------------------------------------------------------------------------------
 # Install the Rust Book
