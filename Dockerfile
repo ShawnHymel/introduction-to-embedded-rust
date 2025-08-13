@@ -71,7 +71,7 @@ RUN cargo install \
     mdbook
 
 # Install clippy for linting
-RUN rustup component add clippy
+RUN rustup component add clippy rustfmt
 
 #-------------------------------------------------------------------------------
 # Install the Rust Book

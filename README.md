@@ -13,7 +13,7 @@ To run:
 Linux, macOS, Windows (PowerShell):
 
 ```sh
-docker run --rm -it -p 3000:3000 -v "${PWD}/workspace:/workspace" -w /workspace env-embedded-rust
+docker run --rm -it -p 3000:3000 -v "$(pwd)/workspace:/home/student/workspace" -w /workspace env-embedded-rust
 ```
 
 ## Initialize rustlings
