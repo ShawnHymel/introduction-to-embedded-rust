@@ -71,7 +71,10 @@ RUN cargo install \
     mdbook
 
 # Install linting, formatting, and inspection tools
-RUN rustup component add clippy rustfmt llvm-tools-preview
+RUN rustup component add \
+    clippy \
+    rustfmt \
+    llvm-tools-preview
 
 #-------------------------------------------------------------------------------
 # Install the Rust Book

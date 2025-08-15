@@ -1,0 +1,13 @@
+[build]
+target = "thumbv6m-none-eabi"
+
+[target.thumbv6m-none-eabi]
+rustflags = [
+  # Compiler optimizations
+  "-C", "no-vectorize-loops", # Disable loop optimizations for SIMD
+  "-C", "panic=abort",        # Just abort on panic (needed for embedded)
+
+  # Linker directives
+  "-C", "link-arg=-Tlink.x",  # Use link.x script with cortex-m-rt to lay out memory
+  "-C", "link-arg=--nmagic",  # Prevent padding memory between sections to save space
+]

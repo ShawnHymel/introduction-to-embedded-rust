@@ -30,6 +30,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d7e60934ceec538daadb9d8432424ed043a904d8e0243f3c6446bce549a46ac"
 
 [[package]]
+name = "blinky-bits"
+version = "0.1.0"
+dependencies = [
+ "cortex-m",
+ "cortex-m-rt",
+ "embedded-hal 1.0.0",
+ "rp2040-boot2",
+ "rp2040-hal",
+]
+
+[[package]]
 name = "byteorder"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -64,7 +75,7 @@ checksum = "e37549a379a9e0e6e576fd208ee60394ccb8be963889eebba3ffe0980364f472"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -168,7 +179,7 @@ checksum = "a0b4095fc99e1d858e5b8c7125d2638372ec85aa0fe6c807105cf10b0265ca6c"
 dependencies = [
  "frunk_proc_macro_helpers",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -180,7 +191,7 @@ dependencies = [
  "frunk_core",
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -260,12 +271,6 @@ dependencies = [
  "quote",
  "syn 1.0.109",
 ]
-
-[[package]]
-name = "panic-halt"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a513e167849a384b7f9b746e517604398518590a9142f4846a32e3c2a4de7b11"
 
 [[package]]
 name = "paste"
@@ -418,21 +423,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
-name = "serial-attempt-2"
-version = "0.1.0"
-dependencies = [
- "cortex-m",
- "cortex-m-rt",
- "embedded-hal 1.0.0",
- "heapless",
- "panic-halt",
- "rp2040-boot2",
- "rp2040-hal",
- "usb-device",
- "usbd-serial",
-]
-
-[[package]]
 name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -451,9 +441,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.104"
+version = "2.0.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17b6f705963418cdb9927482fa304bc562ece2fdd4f616084c50b7023b435a40"
+checksum = "7bc3fcb250e53458e712715cf74285c1f889686520d79294a9ef3bd7aa1fc619"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -474,18 +464,6 @@ checksum = "98816b1accafbb09085168b90f27e93d790b4bfa19d883466b5e53315b5f06a6"
 dependencies = [
  "heapless",
  "portable-atomic",
-]
-
-[[package]]
-name = "usbd-serial"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "065e4eaf93db81d5adac82d9cef8f8da314cb640fa7f89534b972383f1cf80fc"
-dependencies = [
- "embedded-hal 0.2.7",
- "embedded-io",
- "nb 1.1.0",
- "usb-device",
 ]
 
 [[package]]

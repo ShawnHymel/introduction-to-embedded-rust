@@ -1,0 +1,36 @@
+{
+    "folders": [
+        {
+            "name": "apps",
+            "path": "./apps"
+        },
+        {
+            "name": "libs",
+            "path": "./libs"
+        },
+        {
+            "name": "rustlings",
+            "path": "./rustlings"
+        }
+    ],
+    "settings": {
+        "editor.inlayHints.enabled": "offUnlessPressed",
+        "rust-analyzer.cargo.buildScripts.enable": true,
+        "rust-analyzer.procMacro.enable": true,
+        "rust-analyzer.check.command": "clippy",
+        "rust-analyzer.check.allTargets": false,
+        "rust-analyzer.cargo.allTargets": false,
+        "rust-analyzer.lens.enable": false,
+        "rust-analyzer.server.extraEnv": {
+            "RUSTUP_HOME": "/usr/local/rustup",
+            "CARGO_HOME": "/usr/local/cargo",
+            "PATH": "/usr/local/cargo/bin:/usr/bin:/bin",
+            "CC": "/usr/bin/gcc"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "rust-lang.rust-analyzer"
+        ]
+    }
+}
