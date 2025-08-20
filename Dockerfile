@@ -5,6 +5,7 @@ ARG RUST_VERSION=1.85.0-bookworm
 ARG RUST_BOOK_VERSION=async-2024
 ARG RUSTLINGS_VERSION=6.4.0
 ARG USER=student
+ARG WGET_ARGS="-q --show-progress --progress=bar:force:noscroll"
 
 #-------------------------------------------------------------------------------
 # Base Image and Dependencies
@@ -13,9 +14,19 @@ ARG USER=student
 FROM rust:${RUST_VERSION}
 
 # Redeclare arguments after FROM
+ARG TARGETARCH
 ARG RUST_BOOK_VERSION
 ARG RUSTLINGS_VERSION
 ARG USER
+ARG WGET_ARGS
+
+# Check if the target architecture is either x86_64 (amd64) or arm64 (aarch64)
+RUN if [ "$TARGETARCH" = "amd64" ] || [ "$TARGETARCH" = "arm64" ]; then \
+        echo "Architecture $TARGETARCH is supported."; \
+    else \
+        echo "Unsupported architecture: $TARGETARCH"; \
+        exit 1; \
+    fi
 
 # Set environment variables
 ENV RUSTUP_HOME=/usr/local/rustup \
@@ -74,7 +85,7 @@ RUN cargo install \
 RUN rustup component add \
     clippy \
     rustfmt \
-    llvm-tools-preview
+    llvm-tools
 
 #-------------------------------------------------------------------------------
 # Install the Rust Book
@@ -85,6 +96,25 @@ RUN wget -O rust-book.tar.gz https://github.com/rust-lang/book/archive/refs/tags
     mv book-${RUST_BOOK_VERSION} rust-book && \
     cd rust-book && \
     mdbook build
+
+#-------------------------------------------------------------------------------
+# Install Pico Tools
+
+# Switch to root
+USER root
+
+# Install picotool
+RUN case "${TARGETARCH}" in \
+        amd64) PICOTOOL_URL="https://github.com/raspberrypi/pico-sdk-tools/releases/download/v2.2.0-1/picotool-2.2.0-a4-x86_64-lin.tar.gz" ;; \
+        arm64) PICOTOOL_URL="https://github.com/raspberrypi/pico-sdk-tools/releases/download/v2.2.0-1/picotool-2.2.0-a4-aarch64-lin.tar.gz" ;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    cd /tmp && \
+    wget ${WGET_ARGS} -O picotool.tar.gz "${PICOTOOL_URL}" && \
+    tar -xzf picotool.tar.gz && \
+    cp picotool/picotool /usr/local/bin/ && \
+    chmod +x /usr/local/bin/picotool && \
+    rm -rf picotool.tar.gz picotool-*
 
 #-------------------------------------------------------------------------------
 # Entrypoint
