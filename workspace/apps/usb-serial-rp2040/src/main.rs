@@ -1,11 +1,11 @@
 #![no_std]
 #![no_main]
 
+// Alias our HAL
+use rp2040_hal as hal;
+
 // We need to write our own panic handler
 use core::panic::PanicInfo;
-
-// Alias our HAL
-use rp235x_hal as hal;
 
 // USB device and Communications Class Device (CDC) support
 use usb_device::{class_prelude::*, prelude::*};
@@ -17,13 +17,13 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-// Copy boot metadata to .start_block so Boot ROM knows how to boot our program
-#[unsafe(link_section = ".start_block")]
+// Copy bootloader from rp2040-boot2 into BOOT2 section of memory
+#[unsafe(link_section = ".boot2")]
 #[used]
-pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
+pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_GENERIC_03H;
 
-// Set external crystal frequency
-const XOSC_CRYSTAL_FREQ: u32 = 12_000_000;
+// Constants
+const XOSC_CRYSTAL_FREQ: u32 = 12_000_000;  // External crystal on board
 
 // Main entrypoint (custom defined for embedded targets)
 #[hal::entry]
@@ -45,13 +45,13 @@ fn main() -> ! {
     .ok()
     .unwrap();
 
-    // Move ownership of TIMER0 peripheral to create Timer struct
-    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
+    // Move ownership of TIMER peripheral to create Timer struct
+    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS, &clocks);
 
     // Initialize the USB driver
     let usb_bus = UsbBusAllocator::new(hal::usb::UsbBus::new(
-        pac.USB,
-        pac.USB_DPRAM,
+        pac.USBCTRL_REGS,
+        pac.USBCTRL_DPRAM,
         clocks.usb_clock,
         true,
         &mut pac.RESETS,

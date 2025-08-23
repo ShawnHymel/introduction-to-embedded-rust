@@ -13,7 +13,6 @@ EXTERN(BOOT2_FIRMWARE)
 
 /* Put .boot2 section (defined in the rp2040-boot2 crate) into the BOOT2 area of memory */
 SECTIONS {
-    /* ### Boot loader */
     .boot2 ORIGIN(BOOT2) :
     {
         KEEP(*(.boot2));

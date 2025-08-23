@@ -17,7 +17,7 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-// Tell the Boot ROM about our application
+// Copy boot metadata to .start_block so Boot ROM knows how to boot our program
 #[unsafe(link_section = ".start_block")]
 #[used]
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();

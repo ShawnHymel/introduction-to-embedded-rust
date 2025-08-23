@@ -10,4 +10,3 @@ cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
 
 [profile.dev]
-panic = "abort"

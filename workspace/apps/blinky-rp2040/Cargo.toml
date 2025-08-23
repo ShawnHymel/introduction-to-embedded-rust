@@ -1,5 +1,5 @@
 [package]
-name = "blinky-bits"
+name = "blinky"
 version = "0.1.0"
 edition = "2024"
 
@@ -11,10 +11,8 @@ cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
 
 [profile.dev]
-panic = "abort"
 
 [profile.release]
-panic = "abort"
 opt-level = "s"
 lto = true
 codegen-units = 1

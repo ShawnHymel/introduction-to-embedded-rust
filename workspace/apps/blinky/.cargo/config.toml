@@ -5,7 +5,6 @@ target = "thumbv8m.main-none-eabihf"
 [target.thumbv8m.main-none-eabihf]
 rustflags = [
   # Compiler optimizations
-  "-C", "panic=abort",              # Just abort on panic (needed for embedded)
   "-C", "target-cpu=cortex-m33",    # Target the Cortex-M33
 
   # Linker directives

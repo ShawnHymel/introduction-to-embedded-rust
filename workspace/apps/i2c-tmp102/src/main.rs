@@ -1,11 +1,11 @@
 #![no_std]
 #![no_main]
 
-// Alias our HAL
-use rp2040_hal as hal;
-
 // We need to write our own panic handler
 use core::panic::PanicInfo;
+
+// Alias our HAL
+use rp235x_hal as hal;
 
 // Bring GPIO structs/functions into scope
 use hal::gpio::{Pin, FunctionI2C};
@@ -15,7 +15,7 @@ use usb_device::{class_prelude::*, prelude::*};
 use usbd_serial::SerialPort;
 
 // I2C structs/functions
-use embedded_hal::i2c::I2c;
+use embedded_hal::{digital::InputPin, i2c::I2c};
 
 // Used for the rate/frequency type
 use hal::fugit::RateExtU32;
@@ -30,10 +30,10 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-// Copy bootloader from rp2040-boot2 into BOOT2 section of memory
-#[unsafe(link_section = ".boot2")]
+// Copy boot metadata to .start_block so Boot ROM knows how to boot our program
+#[unsafe(link_section = ".start_block")]
 #[used]
-pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_GENERIC_03H;
+pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 // Constants
 const XOSC_CRYSTAL_FREQ: u32 = 12_000_000;  // External crystal on board
@@ -71,6 +71,9 @@ fn main() -> ! {
         &mut pac.RESETS,
     );
 
+    // Configure button pin
+    let mut btn_pin = pins.gpio14.into_pull_up_input();
+
     // Configure I2C pins
     let sda_pin: Pin<_, FunctionI2C, _> = pins.gpio18.reconfigure();
     let scl_pin: Pin<_, FunctionI2C, _> = pins.gpio19.reconfigure();
@@ -85,13 +88,10 @@ fn main() -> ! {
         &clocks.system_clock,
     );
 
-    // Move ownership of TIMER peripheral to create Timer struct
-    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS, &clocks);
-
     // Initialize the USB driver
     let usb_bus = UsbBusAllocator::new(hal::usb::UsbBus::new(
-        pac.USBCTRL_REGS,
-        pac.USBCTRL_DPRAM,
+        pac.USB,
+        pac.USB_DPRAM,
         clocks.usb_clock,
         true,
         &mut pac.RESETS,
@@ -115,14 +115,19 @@ fn main() -> ! {
     let mut output = String::<64>::new();
 
     // Superloop
-    let mut timestamp = timer.get_counter();
+    let mut prev_pressed = false;
     loop {
         // Needs to be called at least every 10 ms
         let _ = usb_dev.poll(&mut [&mut serial]);
 
-        // Read from I2C every second (non-blocking)
-        if (timer.get_counter() - timestamp).to_millis() >= 1_000 {
-            timestamp = timer.get_counter();
+        // Get button state
+        // let btn_pressed: bool = match btn_pin.is_low() {
+        //     Ok(state) => state,
+        //     Err(_e) => false,
+        // };
+        let btn_pressed = btn_pin.is_low().unwrap_or(false);
+
+        if btn_pressed && (!prev_pressed) {
             
             // Read from sensor
             let result = i2c.write_read(
@@ -145,5 +150,8 @@ fn main() -> ! {
             write!(&mut output, "Temperature: {:.2} deg C\r\n", temp_c).unwrap();
             let _ = serial.write(output.as_bytes());
         }
+
+        // Save button pressed state for next iteration
+        prev_pressed = btn_pressed;
     }
 }
