@@ -9,7 +9,8 @@ struct SensorReading {
 fn demo_ownership() {
     let reading = SensorReading {value: 1, timestamp_ms: 100};
 
-    println!("{}, {}", reading.value, reading.timestamp_ms);
+    println!("{}", reading.value);
+    println!("{}", reading.timestamp_ms);
 }
 
 //------------------------------------------------------------------------------
@@ -26,13 +27,14 @@ fn demo_one_owner() {
     // println!("{}", reading.timestamp_ms);
 
     // This works
-    println!("{}, {}", new_owner.value, new_owner.timestamp_ms);
+    println!("{}", new_owner.value);
+    println!("{}", new_owner.timestamp_ms);
 }
 
 fn demo_copy() {
     let my_array = [1, 1, 2, 3, 5, 8];
 
-    // Primitives and arrays implement the Copy trait (if elements implement Copy)
+    // Primitives and arrays implement the Copy trait
     let my_copy = my_array;
 
     // Both of these work
@@ -52,7 +54,8 @@ fn demo_copy() {
 
 fn print_reading(reading: SensorReading) -> SensorReading {
     // Ownership of reading is "consumed" by this function
-    println!("{}, {}", reading.value, reading.timestamp_ms);
+    println!("{}", reading.value);
+    println!("{}", reading.timestamp_ms);
     
     // Fix: return reading (shorthand for "return reading;")
     reading
@@ -69,20 +72,22 @@ fn demo_scope_drop_value() {
         // Fix: return reading ownership
         reading = print_reading(reading);
 
-        // Use `reading` after a move
-        println!("{}, {}", reading.value, reading.timestamp_ms);
+        println!("{}", reading.value);
+        println!("{}", reading.timestamp_ms);
     }
 
     // Error: cannot find value `reading` in this scope
-    // println!("{}, {}", reading.value, reading.timestamp_ms);
+    // println!("{}", reading.value);
+    // println!("{}", reading.timestamp_ms);
 }
 
 //------------------------------------------------------------------------------
 // 4. You can have either one mutable reference or any number of immutable references.
 
 fn print_borrowed_reading(reading: &SensorReading) {
-    // We borrow reading instead of consuming ownership (pass by reference)
-    println!("{}, {}", reading.value, reading.timestamp_ms);
+    // We borrow reading instead of consuming ownership
+    println!("{}", reading.value);
+    println!("{}", reading.timestamp_ms);
 }
 
 fn demo_mutable_references() {
@@ -98,9 +103,9 @@ fn demo_mutable_references() {
     println!("{}", (*immut_ref_1).timestamp_ms);    // Explicit dereference
     println!("{}", immut_ref_2.timestamp_ms);       // Automatic dereference
     println!("{}", immut_ref_3.timestamp_ms);
-    // immut_refs are no longer used, so they go out of scope (example of "non lexical lifetimes")
+    // immut_refs are no longer used, so they go out of scope
 
-    // Only one mutable reference at a time (exclusive)
+    // Only one mutable reference at a time
     let mut_ref_1 = &mut reading;
 
     // Error: cannot borrow `reading` as mutable more than once at a time
@@ -135,16 +140,16 @@ fn demo_mutable_references() {
 fn return_reading() -> SensorReading {
     let some_reading = SensorReading {value: 5, timestamp_ms: 100};
     some_reading
-    // More idiomatic to just return `SensorReading {value: 5, timestamp_ms: 100}`
 }
 
 fn demo_valid_references() {
     let reading = return_reading();
-    println!("{}, {}", reading.value, reading.timestamp_ms);
+    println!("{}", reading.value);
+    println!("{}", reading.timestamp_ms);
 }
 
 //------------------------------------------------------------------------------
-// 6. If you move out part of a value, you cannot use the whole value anymore.
+// 6. If you move out part of a value, you cannot use the whole value anymore
 
 fn demo_partial_move() {
     let my_tuple = (
@@ -163,14 +168,14 @@ fn demo_partial_move() {
     // println!("{}", new_owner.1.value);
     
     // Can print new owner
-    println!("{}, {}", first_reading.value, first_reading.timestamp_ms);
+    println!("{}", first_reading.value);
 
     // Can move and borrow other parts
-    println!("{}, {}", my_tuple.1.value, first_reading.timestamp_ms);
+    println!("{}", my_tuple.1.value);
 }
 
 //------------------------------------------------------------------------------
-// 7. Slices are references to the whole value and follow the same borrowing rules.
+// 7. Slices are references to the whole value and follow the same borrow rules
 
 fn demo_slices() {
     let my_array = [
@@ -189,37 +194,9 @@ fn demo_slices() {
     let slice_2 = &my_array[1..3];
 
     // Print out some of our slices
-    println!("{}, {}", slice_1[0].value, slice_1[0].timestamp_ms);
-    println!("{}, {}", slice_2[0].value, slice_2[0].timestamp_ms);
-    println!("{}, {}", slice_2[1].value, slice_2[1].timestamp_ms);
-}
-
-fn demo_split_mut() {
-    let mut my_array = [
-        SensorReading {value: 7, timestamp_ms: 100},
-        SensorReading {value: 7, timestamp_ms: 101},
-        SensorReading {value: 7, timestamp_ms: 102},
-    ];
-
-    // Split at index 1 to borrow two mutable slices
-    let (slice_1, slice_2) = my_array.split_at_mut(1);
-
-    // Error: cannot assign to `my_array[_].timestamp_ms` because it is borrowed
-    // my_array[0].timestamp_ms = 1234;
-
-    // We can modify each slice
-    slice_1[0].timestamp_ms = 1000;
-    slice_2[0].timestamp_ms = 1001;
-    slice_2[1].timestamp_ms = 1002;
-    // slice_1 and slice_2 go out of scope here
-
-    // We can access my_array again
-    my_array[0].timestamp_ms = 1234;
-
-    // Show that the original array changed
-    println!("{}, {}", my_array[0].value, my_array[0].timestamp_ms);
-    println!("{}, {}", my_array[1].value, my_array[1].timestamp_ms);
-    println!("{}, {}", my_array[2].value, my_array[2].timestamp_ms);
+    println!("{}", slice_1[0].value);
+    println!("{}", slice_2[0].timestamp_ms);
+    println!("{}", slice_2[1].timestamp_ms);
 }
 
 //------------------------------------------------------------------------------
@@ -234,5 +211,4 @@ fn main() {
     demo_valid_references();
     demo_partial_move();
     demo_slices();
-    demo_split_mut();
 }

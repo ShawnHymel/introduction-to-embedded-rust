@@ -39,6 +39,7 @@ pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 const XOSC_CRYSTAL_FREQ: u32 = 12_000_000; // External crystal on board
 const TMP102_ADDR: u8 = 0x48; // Device address on bus
 const TMP102_REG_TEMP: u8 = 0x0; // Address of temperature register
+const DEBOUNCE_DELAY_MS: u64 = 50; // Time to wait to check pin again
 
 // Main entrypoint (custom defined for embedded targets)
 #[hal::entry]
@@ -59,6 +60,9 @@ fn main() -> ! {
     )
     .ok()
     .unwrap();
+
+    // Move ownership of TIMER0 peripheral to create Timer struct
+    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
 
     // Single-cycle I/O block (fast GPIO)
     let sio = hal::Sio::new(pac.SIO);
@@ -114,6 +118,10 @@ fn main() -> ! {
     let mut rx_buf = [0u8; 2];
     let mut output = String::<64>::new();
 
+    // Declare variables for debouncing
+    let mut last_debounce_time = timer.get_counter();
+    let mut btn_state = false;
+
     // Superloop
     let mut prev_pressed = false;
     loop {
@@ -121,29 +129,39 @@ fn main() -> ! {
         let _ = usb_dev.poll(&mut [&mut serial]);
 
         // Get button state
-        // let btn_pressed: bool = match btn_pin.is_low() {
-        //     Ok(state) => state,
-        //     Err(_e) => false,
-        // };
         let btn_pressed = btn_pin.is_low().unwrap_or(false);
 
-        if btn_pressed && (!prev_pressed) {
-            // Read from sensor
-            let result = i2c.write_read(TMP102_ADDR, &[TMP102_REG_TEMP], &mut rx_buf);
-            if result.is_err() {
-                let _ = serial.write(b"ERROR: Could not read temperature\r\n");
-                continue;
+        // Get timestamp if pin changed state
+        if btn_pressed != prev_pressed {
+            last_debounce_time = timer.get_counter();
+        }
+
+        // Some time after the pin change event, check the button state again
+        if (timer.get_counter() - last_debounce_time).to_millis() > DEBOUNCE_DELAY_MS {
+            // If the button state has changed, save the reading
+            if btn_pressed != btn_state {
+                btn_state = btn_pressed;
+
+                // Only read from sensor if the new button state is true
+                if btn_state {
+                    // Read from sensor
+                    let result = i2c.write_read(TMP102_ADDR, &[TMP102_REG_TEMP], &mut rx_buf);
+                    if result.is_err() {
+                        let _ = serial.write(b"ERROR: Could not read temperature\r\n");
+                        continue;
+                    }
+
+                    // Convert raw reading (signed 12-bit value) into Celsius
+                    let temp_raw = ((rx_buf[0] as u16) << 8) | (rx_buf[1] as u16);
+                    let temp_signed = (temp_raw as i16) >> 4;
+                    let temp_c = (temp_signed as f32) * 0.0625;
+
+                    // Print out value
+                    output.clear();
+                    write!(&mut output, "Temperature: {:.2} deg C\r\n", temp_c).unwrap();
+                    let _ = serial.write(output.as_bytes());
+                }
             }
-
-            // Convert raw reading (signed 12-bit value) into Celsius
-            let temp_raw = ((rx_buf[0] as u16) << 8) | (rx_buf[1] as u16);
-            let temp_signed = (temp_raw as i16) >> 4;
-            let temp_c = (temp_signed as f32) * 0.0625;
-
-            // Print out value
-            output.clear();
-            write!(&mut output, "Temperature: {:.2} deg C\r\n", temp_c).unwrap();
-            let _ = serial.write(output.as_bytes());
         }
 
         // Save button pressed state for next iteration
