@@ -1,0 +1,13 @@
+[build]
+# Target is the Cortex-M33 with FPU enabled
+target = "thumbv8m.main-none-eabihf"
+
+[target.thumbv8m.main-none-eabihf]
+rustflags = [
+  # Compiler optimizations
+  "-C", "target-cpu=cortex-m33",    # Target the Cortex-M33
+
+  # Linker directives
+  "-C", "link-arg=-Tlink.x",  # Use link.x script with cortex-m-rt to lay out memory
+  "-C", "link-arg=--nmagic",  # Prevent padding memory between sections to save space
+]

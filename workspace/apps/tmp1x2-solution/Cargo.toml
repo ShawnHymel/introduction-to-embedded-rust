@@ -1,0 +1,22 @@
+[package]
+name = "tmp1x2-solution"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rp235x-hal = { version = "0.3.0", features = ["rt", "critical-section-impl"] }
+embedded-hal = "1.0.0"
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+usb-device = "0.3.2"
+usbd-serial = "0.2.2"
+heapless = "0.8.0"
+tmp1x2 = "1.1.0"
+
+[profile.dev]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

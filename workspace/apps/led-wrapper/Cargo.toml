@@ -1,0 +1,12 @@
+[package]
+name = "led-wrapper"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rp235x-hal = { version = "0.3.0", features = ["rt", "critical-section-impl"] }
+embedded-hal = "1.0.0"
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+
+[profile.dev]
