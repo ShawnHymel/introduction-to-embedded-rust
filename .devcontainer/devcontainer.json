@@ -4,12 +4,14 @@
 	"workspaceMount": "source=${localWorkspaceFolder}/workspace,target=/home/student/workspace,type=bind",
 	"workspaceFolder": "/home/student/workspace",
 	"features": {},
-	"forwardPorts": [3000],
+	"forwardPorts": [3000, 33033],
 	"postCreateCommand": "/usr/local/bin/entrypoint.sh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"rust-lang.rust-analyzer"
+				"rust-lang.rust-analyzer",
+				"mcu-debug.debug-tracker-vscode",
+				"marus25.cortex-debug"
 			],
 			"settings": {
 				"terminal.integrated.defaultProfile.linux": "bash",

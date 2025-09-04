@@ -1,5 +1,5 @@
 [package]
-name = "tmp102-driver-demo"
+name = "blinky-debug"
 version = "0.1.0"
 edition = "2024"
 
@@ -8,12 +8,15 @@ rp235x-hal = { version = "0.3.0", features = ["rt", "critical-section-impl"] }
 embedded-hal = "1.0.0"
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
-usb-device = "0.3.2"
-usbd-serial = "0.2.2"
-heapless = "0.8.0"
-tmp102-driver = { path = "../../libraries/tmp102-driver"}
+defmt = "1.0.0"
+defmt-rtt = "1.0.0"
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
 
 [profile.dev]
+debug = 2
+opt-level = 1
+lto = false
+codegen-units = 1
 
 [profile.release]
 opt-level = "s"

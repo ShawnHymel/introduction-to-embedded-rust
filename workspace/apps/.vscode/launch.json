@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Debug RP2350",
+            "type": "cortex-debug",
+            "request": "attach",
+            "executable": "${input:elfPath}",
+            "serverArgs": [],
+            "cwd":  "${workspaceFolder}",
+            "servertype": "external",
+            "objdumpPath": "/usr/bin/arm-none-eabi-objdump",
+            "gdbPath": "gdb-multiarch",
+            "gdbTarget": "10.0.0.100:33033"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "elfPath",
+            "type": "pickString",
+            "description": "Select ELF file",
+            "options": [
+                "${workspaceFolder}/blinky-debug/target/thumbv8m.main-none-eabihf/debug/blinky-debug"
+            ]
+        }
+    ]
+}

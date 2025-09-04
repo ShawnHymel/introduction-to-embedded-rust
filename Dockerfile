@@ -42,6 +42,8 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     libudev-dev \
     libusb-1.0-0-dev \
+    binutils-arm-none-eabi \
+    gdb-multiarch \
     git \
     curl \
     wget \

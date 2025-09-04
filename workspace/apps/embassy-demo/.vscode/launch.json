@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Debug RP2350",
+            "type": "cortex-debug",
+            "request": "attach",
+            "servertype": "external",
+            "gdbTarget": "10.0.0.100:33033",
+            "executable": "${workspaceFolder}/target/thumbv8m.main-none-eabihf/debug/blinky-debug",
+            "device": "RP2350",
+            "interface": "swd",
+            "serverArgs": [],
+        }
+    ]
+}

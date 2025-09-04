@@ -5,8 +5,8 @@
             "path": "./apps"
         },
         {
-            "name": "libs",
-            "path": "./libs"
+            "name": "libraries",
+            "path": "./libraries"
         },
         {
             "name": "rustlings",
@@ -30,7 +30,9 @@
     },
     "extensions": {
         "recommendations": [
-            "rust-lang.rust-analyzer"
+            "rust-lang.rust-analyzer",
+            "mcu-debug.debug-tracker-vscode",
+            "marus25.cortex-debug"
         ]
     }
 }

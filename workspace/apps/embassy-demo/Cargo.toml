@@ -1,0 +1,29 @@
+[package]
+name = "embassy-demo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+embassy-executor = { version = "0.9.0", features = ["arch-cortex-m", "executor-thread"] }
+embassy-time = { version = "0.5.0", features = ["defmt-timestamp-uptime"] }
+embassy-rp = { version = "0.8.0", features = ["time-driver", "critical-section-impl", "rp235xa"] }
+
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+
+defmt = "1.0.0"
+defmt-rtt = "1.0.0"
+
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+
+[profile.dev]
+debug = 2
+opt-level = 1
+lto = false
+codegen-units = 1
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
