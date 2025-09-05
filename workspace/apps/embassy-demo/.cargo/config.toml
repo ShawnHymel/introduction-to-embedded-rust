@@ -1,17 +1,12 @@
 [build]
-# Target is the Cortex-M33 with FPU enabled
 target = "thumbv8m.main-none-eabihf"
 
 [target.thumbv8m.main-none-eabihf]
 rustflags = [
   # Compiler optimizations
-  "-C", "target-cpu=cortex-m33",    # Target the Cortex-M33
+  "-C", "target-cpu=cortex-m33",
 
   # Linker directives
-  "-C", "link-arg=-Tlink.x",  # Use link.x script with cortex-m-rt to lay out memory
-  "-C", "link-arg=--nmagic",  # Prevent padding memory between sections to save space
-  "-C", "link-arg=-Tdefmt.x", # Store debug string lookup table in binary (required for defmt to work)
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=--nmagic",
 ]
-
-[env]
-DEFMT_LOG = "debug"
