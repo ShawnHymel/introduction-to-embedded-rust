@@ -34,7 +34,7 @@ bind_interrupts!(struct Irqs {
 // Task: handle USB logging
 #[embassy_executor::task]
 async fn logger_task(driver: Driver<'static, USB>) {
-    embassy_usb_logger::run!(1024, log::LevelFilter::Info, driver);
+    embassy_usb_logger::run!(1024, log::LevelFilter::Debug, driver);
 }
 
 // Handle button presses in main task
